@@ -27,6 +27,10 @@ struct MatchMarkers: View {
                 matchMarker(peg: 2)
                 matchMarker(peg: 3)
             }
+            VStack {
+                matchMarker(peg: 4)
+                matchMarker(peg: 5)
+            }
         }
     }
     
@@ -40,6 +44,25 @@ struct MatchMarkers: View {
     }
 }
 
+struct MatchMarkersPreview: View {
+    let matches: [Match]
+
+    var body: some View {
+        HStack {
+            ForEach(0..<matches.count, id: \.self) { i in
+                Circle()
+            }
+            MatchMarkers(matches: matches)
+        }
+        .frame(width: 350, height: 40, alignment: .leading)
+
+        .padding()
+    }
+}
+
 #Preview {
-    MatchMarkers(matches: [.exact, .nomatch, .inexact, .nomatch])
+    MatchMarkersPreview(matches: [.exact, .inexact, .exact, .exact, .exact, .exact])
+    MatchMarkersPreview(matches: [.inexact, .inexact, .nomatch])
+    MatchMarkersPreview(matches: [.exact, .inexact, .exact, .exact])
+    MatchMarkersPreview(matches: [.exact, .exact, .exact, .exact, .exact, .exact])
 }
