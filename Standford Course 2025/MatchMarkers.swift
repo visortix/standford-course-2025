@@ -27,16 +27,12 @@ struct MatchMarkers: View {
                 matchMarker(peg: 2)
                 matchMarker(peg: 3)
             }
-            VStack {
-                matchMarker(peg: 4)
-                matchMarker(peg: 5)
-            }
         }
     }
     
     func matchMarker(peg: Int) -> some View {
-        let exactCount = matches.count(where: {match in match == .exact})
-        let foundCount = matches.count(where: {match in match != .nomatch})
+        let exactCount = matches.count { $0 == .exact}
+        let foundCount = matches.count { $0 != .nomatch}
         return Circle()
             .fill(exactCount > peg ? Color.primary : Color.clear)
             .strokeBorder(foundCount > peg ? Color.primary : Color.clear, lineWidth: 2)
@@ -44,25 +40,6 @@ struct MatchMarkers: View {
     }
 }
 
-struct MatchMarkersPreview: View {
-    let matches: [Match]
-
-    var body: some View {
-        HStack {
-            ForEach(0..<matches.count, id: \.self) { i in
-                Circle()
-            }
-            MatchMarkers(matches: matches)
-        }
-        .frame(width: 350, height: 40, alignment: .leading)
-
-        .padding()
-    }
-}
-
 #Preview {
-    MatchMarkersPreview(matches: [.exact, .inexact, .exact, .exact, .exact, .exact])
-    MatchMarkersPreview(matches: [.inexact, .inexact, .nomatch])
-    MatchMarkersPreview(matches: [.exact, .inexact, .exact, .exact])
-    MatchMarkersPreview(matches: [.exact, .exact, .exact, .exact, .exact, .exact])
+    MatchMarkers(matches: [.exact, .inexact, .exact, .exact])
 }

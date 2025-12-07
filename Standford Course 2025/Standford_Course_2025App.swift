@@ -14,7 +14,7 @@ struct Standford_Course_2025App: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CodeBreakerView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
