@@ -8,9 +8,11 @@
 import SwiftUI
 import CoreData
 
+
+
 struct CodeBreakerView: View {
     @State var game = CodeBreaker()
-    
+            
     var body: some View {
         VStack {
             line(of: game.masterCode)
@@ -24,6 +26,8 @@ struct CodeBreakerView: View {
         .padding()
     }
     
+    // MARK: - Buttons
+    
     var guessButton: some View {
         Button("Guess") {
             withAnimation {
@@ -34,36 +38,80 @@ struct CodeBreakerView: View {
         .minimumScaleFactor(0.1)
     }
     
-    func line(of code: Code) -> some View {
-        HStack {
-            ForEach(code.pegs.indices, id: \.self) { index in
-                RoundedRectangle(cornerRadius: 10)
-                    .overlay {
-                        if code.pegs[index] == Code.missing {
-                            RoundedRectangle(cornerRadius: 10)
-                                .strokeBorder(.gray)
-                        }
-                    }
-                    .contentShape(Rectangle())
+    var restartButton: some View {
+        Button("Restart Game") {
+            withAnimation {
+                game.restartGame()
+            }
+        }
+        .font(.system(size: 80))
+        .minimumScaleFactor(0.1)
+    }
+    
+    
+    // MARK: - Code line views
+    
+    @ViewBuilder
+    func draw(peg: Peg, using roundedRectangle: RoundedRectangle) -> some View {
+        switch peg {
+        case .emoji(let emojiString):
+            Text(emojiString)
+                .font(.system(size: 80))
+                .minimumScaleFactor(0.1)
+        case .color(let pegColor):
+            roundedRectangle.fill(pegColor)
+        default:
+            roundedRectangle.fill(.clear)
+        }
+    }
+    
+    func drawPegs(from code: Code) -> some View {
+        let roundedRectangle = RoundedRectangle(cornerRadius: 10)
+
+        return ForEach(code.pegs.indices, id: \.self) { index in
+            let peg = code.pegs[index]
+            
+            ZStack {
+                roundedRectangle
                     .aspectRatio(1, contentMode: .fit)
-                    .foregroundStyle(code.pegs[index])
-                    .onTapGesture {
+                    .foregroundStyle(.clear)
+                    .overlay {
                         if code.kind == .guess {
-                            game.changeGuessPeg(at: index)
+                            roundedRectangle.strokeBorder(.gray)
                         }
+                        draw(peg: peg, using: roundedRectangle)
                     }
             }
-            MatchMarkers(matches: code.matches)
-                .overlay {
-                    if code.kind == .guess{
-                        guessButton
-                    }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                if code.kind == .guess {
+                    game.changeGuessPeg(at: index)
                 }
+            }
+        }
+    }
+    
+    func matchMarkers(from code: Code) -> some View {
+        MatchMarkers(matches: code.matches)
+            .overlay {
+                if code.kind == .guess {
+                    guessButton
+                }
+                if code.kind == .master {
+                    restartButton
+                }
+            }
+    }
+    
+    func line(of code: Code) -> some View {
+        HStack {
+            drawPegs(from: code)
+            matchMarkers(from: code)
         }
     }
 }
 
-
+// MARK: - #Preview
 
 #Preview {
     CodeBreakerView()
