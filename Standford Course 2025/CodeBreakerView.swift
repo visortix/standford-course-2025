@@ -11,11 +11,12 @@ import CoreData
 
 
 struct CodeBreakerView: View {
-    @State var game = CodeBreaker()
+    @State private var game = CodeBreaker()
             
     var body: some View {
         VStack {
             line(of: game.masterCode)
+            Divider()
             ScrollView {
                 line(of: game.guess)
                 ForEach(game.attempts.indices.reversed(), id: \.self) { index in
@@ -72,9 +73,7 @@ struct CodeBreakerView: View {
             let peg = code.pegs[index]
             
             ZStack {
-                roundedRectangle
-                    .aspectRatio(1, contentMode: .fit)
-                    .foregroundStyle(.clear)
+                roundedRectangle.foregroundStyle(.clear).aspectRatio(1, contentMode: .fit)
                     .overlay {
                         if code.kind == .guess {
                             roundedRectangle.strokeBorder(.gray)
@@ -92,13 +91,17 @@ struct CodeBreakerView: View {
     }
     
     func matchMarkers(from code: Code) -> some View {
-        MatchMarkers(matches: code.matches)
+        Rectangle().foregroundStyle(.clear).aspectRatio(1, contentMode: .fit)
             .overlay {
-                if code.kind == .guess {
-                    guessButton
-                }
-                if code.kind == .master {
-                    restartButton
+                if let matches = code.matches {
+                    MatchMarkers(matches: matches)
+                } else {
+                    if code.kind == .guess {
+                        guessButton
+                    }
+                    if code.kind == .master {
+                        restartButton
+                    }
                 }
             }
     }
