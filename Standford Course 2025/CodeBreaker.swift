@@ -7,13 +7,11 @@
 
 import SwiftUI
 
-enum Peg: Equatable {
+enum Peg: Equatable, Hashable {
     case color(Color)
     case emoji(String)
     case missing
 }
-
-// MARK: - struct CodeBreakers
 
 struct CodeBreaker {
     var masterCode: Code
@@ -43,18 +41,12 @@ struct CodeBreaker {
         pegChoices: [Peg] = pegEmojis,
         count: Int = Int.random(in: 3...6),
         gameNumber: Int = 0
-    )
-    {
-        print(gameNumber)
-        
+    ) {        
         self.pegChoices = switch gameNumber {
         case 1: CodeBreaker.pegColors
         case 2: CodeBreaker.pegEmojis
         default: pegChoices
         }
-        
-        print(self.pegChoices)
-
         
         if !pegChoices.isEmpty {
             switch self.pegChoices[0] {
@@ -66,9 +58,17 @@ struct CodeBreaker {
             }
         }
 
-        masterCode = Code(kind: .master, count: count)
+        masterCode = Code(kind: .master(isHidden: true), count: count)
         masterCode.randomize(from: self.pegChoices)
         guess = Code(kind: .guess, count: count)
+    }
+    
+    var pegCount: Int {
+        masterCode.pegs.count
+    }
+    
+    var isOver: Bool {
+        attempts.last?.pegs == masterCode.pegs
     }
     
     mutating func attemptGuess() {
@@ -82,75 +82,29 @@ struct CodeBreaker {
         attempt.kind = .attempt(guess.match(against: masterCode))
         
         attempts.append(attempt)
+        guess.reset()
+        if isOver {
+            masterCode.kind = .master(isHidden: false)
+        }
+    }
+    
+    mutating func setGuessPeg(_ peg: Peg, at index: Int) {
+        guard masterCode.pegs.indices.contains(index) else { return }
+        guess.pegs[index] = peg
     }
     
     mutating func restartGame() {
-        print("here")
         self = CodeBreaker(gameNumber: Int.random(in: 1...2))
     }
     
     mutating func changeGuessPeg(at index: Int) {
-        guard index < guess.pegs.count else { return }
+        guard guess.pegs.indices.contains(index) else { return }
         let existingPeg = guess.pegs[index]
         if let indexOfExistingPeg = pegChoices.firstIndex(of: existingPeg) {
             let newPeg = pegChoices[(indexOfExistingPeg + 1) % pegChoices.count]
             guess.pegs[index] = newPeg
         } else {
             guess.pegs[index] = pegChoices.first ?? Peg.missing
-        }
-    }
-}
-
-// MARK: - struct Code
-
-struct Code {
-    var kind: Kind
-    var pegs: [Peg]
-    
-    init(kind: Kind, count: Int) {
-        self.kind = kind
-        self.pegs = Array(repeating: Peg.missing, count: count)
-    }
-    
-    enum Kind: Equatable {
-        case master
-        case guess
-        case attempt([Match])
-        case unknown
-    }
-    
-    mutating func randomize(from pegChoices: [Peg]) {
-        for index in pegs.indices {
-            pegs[index] = pegChoices.randomElement() ?? Peg.missing
-        }
-    }
-    
-    var matches: [Match]? {
-        switch kind {
-        case .attempt(let matches): return matches
-        default: return nil
-        }
-    }
-    
-    func match(against otherCode: Code) -> [Match] {
-        var pegsToMatch = otherCode.pegs
-                
-        let backwardsExactMatches = pegs.indices.reversed().map { index in
-            if pegsToMatch.count > index, pegsToMatch[index] == pegs[index] {
-                pegsToMatch.remove(at: index)
-                return Match.exact
-            } else {
-                return .nomatch
-            }
-        }
-        let exactMatches = Array(backwardsExactMatches.reversed())
-        return pegs.indices.map { index in
-            if exactMatches[index] != .exact, let matchIndex = pegsToMatch.firstIndex(of: pegs[index]) {
-                pegsToMatch.remove(at: matchIndex)
-                return .inexact
-            } else {
-                return exactMatches[index]
-            }
         }
     }
 }

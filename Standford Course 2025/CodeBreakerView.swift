@@ -8,20 +8,28 @@
 import SwiftUI
 import CoreData
 
-
-
 struct CodeBreakerView: View {
+    //MARK: Data Owned by Me
     @State private var game = CodeBreaker()
+    @State private var selection: Int = 0
+    
+    // MARK: - Body
             
     var body: some View {
         VStack {
             line(of: game.masterCode)
             Divider()
             ScrollView {
-                line(of: game.guess)
+                if !game.isOver {
+                    line(of: game.guess).padding(GuessLine.padding)
+                }
                 ForEach(game.attempts.indices.reversed(), id: \.self) { index in
                     line(of: game.attempts[index])
                 }
+            }
+            PegChooserView(choices: game.pegChoices) { peg in
+                game.setGuessPeg(peg, at: selection)
+                selection = (selection + 1) % game.pegCount
             }
         }
         .padding()
@@ -33,61 +41,35 @@ struct CodeBreakerView: View {
         Button("Guess") {
             withAnimation {
                 game.attemptGuess()
+                selection = 0
             }
         }
-        .font(.system(size: 80))
-        .minimumScaleFactor(0.1)
+        .font(.system(size: ActionButton.maximumFontSize))
+        .minimumScaleFactor(ActionButton.scaleFactor)
     }
     
     var restartButton: some View {
         Button("Restart Game") {
             withAnimation {
                 game.restartGame()
+                selection = 0
             }
         }
-        .font(.system(size: 80))
-        .minimumScaleFactor(0.1)
+        .font(.system(size: ActionButton.maximumFontSize))
+        .minimumScaleFactor(ActionButton.scaleFactor)
     }
     
+    // MARK: - Code Line
     
-    // MARK: - Code line views
-    
-    @ViewBuilder
-    func draw(peg: Peg, using roundedRectangle: RoundedRectangle) -> some View {
-        switch peg {
-        case .emoji(let emojiString):
-            Text(emojiString)
-                .font(.system(size: 80))
-                .minimumScaleFactor(0.1)
-        case .color(let pegColor):
-            roundedRectangle.fill(pegColor)
-        default:
-            roundedRectangle.fill(.clear)
+    func line(of code: Code) -> some View {
+        HStack {
+            drawPegs(from: code)
+            matchMarkers(from: code)
         }
     }
     
     func drawPegs(from code: Code) -> some View {
-        let roundedRectangle = RoundedRectangle(cornerRadius: 10)
-
-        return ForEach(code.pegs.indices, id: \.self) { index in
-            let peg = code.pegs[index]
-            
-            ZStack {
-                roundedRectangle.foregroundStyle(.clear).aspectRatio(1, contentMode: .fit)
-                    .overlay {
-                        if code.kind == .guess {
-                            roundedRectangle.strokeBorder(.gray)
-                        }
-                        draw(peg: peg, using: roundedRectangle)
-                    }
-            }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                if code.kind == .guess {
-                    game.changeGuessPeg(at: index)
-                }
-            }
-        }
+        CodeView(code: code, selection: $selection)
     }
     
     func matchMarkers(from code: Code) -> some View {
@@ -99,18 +81,26 @@ struct CodeBreakerView: View {
                     if code.kind == .guess {
                         guessButton
                     }
-                    if code.kind == .master {
+                    if code.kind == .master(isHidden: false) {
                         restartButton
                     }
                 }
             }
     }
-    
-    func line(of code: Code) -> some View {
-        HStack {
-            drawPegs(from: code)
-            matchMarkers(from: code)
-        }
+    struct ActionButton {
+        static let minimumFontSize: CGFloat = 8
+        static let maximumFontSize: CGFloat = 80
+        static let scaleFactor = minimumFontSize / maximumFontSize
+    }
+    struct GuessLine {
+        static let bottomBorder: CGFloat = 15
+        static let padding = EdgeInsets(top: 0, leading: 0, bottom: GuessLine.bottomBorder, trailing: 0)
+    }
+}
+
+extension Color {
+    static func gray(_ brightness: CGFloat) -> Color {
+        Color(hue: 12/360, saturation: 0, brightness: brightness)
     }
 }
 
