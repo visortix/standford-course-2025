@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+protocol ScoreSaver {
+    func saveBestScore(attempts: Int)
+}
+
 enum Peg: Equatable, Hashable {
     case color(Color)
     case emoji(String)
@@ -18,6 +22,8 @@ struct CodeBreaker {
     var guess: Code
     var attempts: [Code] = []
     let pegChoices: [Peg]
+    
+    var scoreSaver: ScoreSaver?
     
     private static var pegColors: [Peg] = [
         .color(.red),
@@ -38,10 +44,12 @@ struct CodeBreaker {
     ]
     
     init(
-        pegChoices: [Peg] = pegEmojis,
-        count: Int = Int.random(in: 3...6),
-        gameNumber: Int = 0
-    ) {        
+            pegChoices: [Peg] = pegEmojis,
+            count: Int = Int.random(in: 3...6),
+            gameNumber: Int = 0,
+            scoreSaver: ScoreSaver? = nil // <-- Новий параметр
+        ) {
+        self.scoreSaver = scoreSaver
         self.pegChoices = switch gameNumber {
         case 1: CodeBreaker.pegColors
         case 2: CodeBreaker.pegEmojis
@@ -85,6 +93,7 @@ struct CodeBreaker {
         guess.reset()
         if isOver {
             masterCode.kind = .master(isHidden: false)
+            scoreSaver?.saveBestScore(attempts: attempts.count)
         }
     }
     

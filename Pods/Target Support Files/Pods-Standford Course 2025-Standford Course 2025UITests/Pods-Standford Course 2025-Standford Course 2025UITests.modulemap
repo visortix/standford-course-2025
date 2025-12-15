@@ -1,0 +1,6 @@
+framework module Pods_Standford_Course_2025_Standford_Course_2025UITests {
+  umbrella header "Pods-Standford Course 2025-Standford Course 2025UITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

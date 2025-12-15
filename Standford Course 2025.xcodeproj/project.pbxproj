@@ -27,7 +27,35 @@
 		D65589B22ED73B760079015A /* Standford Course 2025.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Standford Course 2025.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D65589C42ED73B770079015A /* Standford Course 2025Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Standford Course 2025Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D65589CE2ED73B770079015A /* Standford Course 2025UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Standford Course 2025UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D6A9DDC62EF05445001DEB31 /* CucumberishLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = CucumberishLibrary.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D67A061A2EF056350026FA8E /* Exceptions for "Standford Course 2025UITests" folder in "Standford Course 2025" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Tests.feature,
+			);
+			target = D65589B12ED73B760079015A /* Standford Course 2025 */;
+		};
+		D6CF66D22EF044670063F4B4 /* Exceptions for "Standford Course 2025UITests" folder in "Standford Course 2025UITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Tests.feature,
+			);
+			target = D65589CD2ED73B770079015A /* Standford Course 2025UITests */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		D6CF66D32EF044670063F4B4 /* Exceptions for "Standford Course 2025UITests" folder in "Compile Sources" phase from "Standford Course 2025UITests" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = D65589CA2ED73B770079015A /* Sources */;
+			membershipExceptions = (
+				Tests.feature,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		D65589B42ED73B760079015A /* Standford Course 2025 */ = {
@@ -42,6 +70,11 @@
 		};
 		D65589D12ED73B770079015A /* Standford Course 2025UITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D67A061A2EF056350026FA8E /* Exceptions for "Standford Course 2025UITests" folder in "Standford Course 2025" target */,
+				D6CF66D22EF044670063F4B4 /* Exceptions for "Standford Course 2025UITests" folder in "Standford Course 2025UITests" target */,
+				D6CF66D32EF044670063F4B4 /* Exceptions for "Standford Course 2025UITests" folder in "Compile Sources" phase from "Standford Course 2025UITests" target */,
+			);
 			path = "Standford Course 2025UITests";
 			sourceTree = "<group>";
 		};
@@ -88,6 +121,13 @@
 				D65589B22ED73B760079015A /* Standford Course 2025.app */,
 				D65589C42ED73B770079015A /* Standford Course 2025Tests.xctest */,
 				D65589CE2ED73B770079015A /* Standford Course 2025UITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D6A9DDD42EF05445001DEB31 /* Products */ = {
+			isa = PBXGroup;
+			children = (
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -198,6 +238,12 @@
 			preferredProjectObjectVersion = 77;
 			productRefGroup = D65589B32ED73B760079015A /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = D6A9DDD42EF05445001DEB31 /* Products */;
+					ProjectRef = D6A9DDC62EF05445001DEB31 /* CucumberishLibrary.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				D65589B12ED73B760079015A /* Standford Course 2025 */,
@@ -392,6 +438,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 3Z49445F82;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -436,6 +483,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 3Z49445F82;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -532,6 +580,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3Z49445F82;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_KEY_NSPrincipalClass = CucumberishLoader;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
@@ -542,6 +592,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Standford Course 2025UITests/CodeBreakerUITests-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
@@ -557,6 +608,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 3Z49445F82;
 				GENERATE_INFOPLIST_FILE = YES;
+				HEADER_SEARCH_PATHS = "$(inherited)";
+				INFOPLIST_KEY_NSPrincipalClass = CucumberishLoader;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
@@ -567,6 +620,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "Standford Course 2025UITests/CodeBreakerUITests-Bridging-Header.h";
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";

@@ -123,3 +123,57 @@ final class CodeBreakerIntegrationTests: XCTestCase {
         XCTAssertFalse(game.isOver)
     }
 }
+// MARK: - Spy Object Implementation
+// Цей клас існує лише всередині тестового файлу.
+// Він "шпигує" за викликами, записуючи їх, замість того щоб писати в реальну базу.
+
+class SpyScoreSaver: ScoreSaver {
+    // Прапорець: чи був викликаний метод?
+    var saveScoreCalled: Bool = false
+    
+    // Дані: яке саме значення намагалися зберегти?
+    var lastSavedScore: Int?
+    
+    func saveBestScore(attempts: Int) {
+        saveScoreCalled = true
+        lastSavedScore = attempts
+        print("Spy зафіксував виклик збереження з результатом: \(attempts)")
+    }
+}
+
+// MARK: - Інтеграційний тест з використанням Spy
+
+extension CodeBreakerIntegrationTests {
+    
+    func testScoreSavingInteraction() {
+        // 1. ARRANGE (Підготовка)
+        // Створюємо шпигуна
+        let spy = SpyScoreSaver()
+        
+        // Впроваджуємо шпигуна в гру (Dependency Injection)
+        var gameWithSpy = CodeBreaker(count: 4, scoreSaver: spy)
+        
+        // Налаштовуємо гру для швидкої перемоги
+        var fixedMaster = Code(kind: .master(isHidden: true), count: 4)
+        let winPeg = Peg.color(.green)
+        fixedMaster.pegs = [winPeg, winPeg, winPeg, winPeg]
+        gameWithSpy.masterCode = fixedMaster
+        
+        // 2. ACT (Дія)
+        // Робимо виграшний хід
+        for i in 0..<4 {
+            gameWithSpy.setGuessPeg(winPeg, at: i)
+        }
+        
+        // Цей метод має викликати spy.saveBestScore() всередині, якщо логіка вірна
+        gameWithSpy.attemptGuess()
+        
+        // 3. ASSERT (Перевірка взаємодії)
+        
+        // Перевіряємо факт виклику (Behavior Verification)
+        XCTAssertTrue(spy.saveScoreCalled, "Метод збереження мав бути викликаний після перемоги")
+        
+        // Перевіряємо передані аргументи (State Verification)
+        XCTAssertEqual(spy.lastSavedScore, 1, "Система мала спробувати зберегти рахунок '1' (одна спроба)")
+    }
+}
