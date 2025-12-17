@@ -33,6 +33,10 @@ struct CodeView: View {
                     Circle().scale(1.15)
                         .foregroundStyle(code.isHidden ? Color.gray(0.97) : .clear)
                 }
+                .contentShape(Rectangle())
+                .accessibilityElement(children: .ignore)
+                .accessibilityIdentifier(code.kind == .guess ? "guess_peg_slot_\(index)" : "static_peg")
+                .accessibilityAddTraits(.isButton)
                 .onTapGesture {
                     if code.kind == .guess {
                         selection = index

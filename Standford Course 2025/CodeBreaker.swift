@@ -6,10 +6,10 @@
 //
 
 import SwiftUI
+import os
 
-protocol ScoreSaver {
-    func saveBestScore(attempts: Int)
-}
+let logger = Logger(subsystem: "com.stanford.codebreaker", category: "GameLogic")
+let signposter = OSSignposter(logger: logger)
 
 enum Peg: Equatable, Hashable {
     case color(Color)
@@ -22,8 +22,6 @@ struct CodeBreaker {
     var guess: Code
     var attempts: [Code] = []
     let pegChoices: [Peg]
-    
-    var scoreSaver: ScoreSaver?
     
     private static var pegColors: [Peg] = [
         .color(.red),
@@ -44,12 +42,10 @@ struct CodeBreaker {
     ]
     
     init(
-            pegChoices: [Peg] = pegEmojis,
-            count: Int = Int.random(in: 3...6),
-            gameNumber: Int = 0,
-            scoreSaver: ScoreSaver? = nil // <-- Новий параметр
-        ) {
-        self.scoreSaver = scoreSaver
+        pegChoices: [Peg] = pegEmojis,
+        count: Int = Int.random(in: 3...6),
+        gameNumber: Int = 0
+    ) {        
         self.pegChoices = switch gameNumber {
         case 1: CodeBreaker.pegColors
         case 2: CodeBreaker.pegEmojis
@@ -80,11 +76,14 @@ struct CodeBreaker {
     }
     
     mutating func attemptGuess() {
+        let state = signposter.beginInterval("Attempt Guess Logic")
+        defer { signposter.endInterval("Attempt Guess Logic", state) }
+        
         let missingPegs = guess.pegs.filter({ $0 == Peg.missing })
         guard missingPegs.count != masterCode.pegs.count else { return }
-        guard !attempts.contains(where: { $0.pegs == guess.pegs }) else {
-            return
-        }
+//        guard !attempts.contains(where: { $0.pegs == guess.pegs }) else {
+//            return
+//        }
         
         var attempt = guess
         attempt.kind = .attempt(guess.match(against: masterCode))
@@ -93,7 +92,6 @@ struct CodeBreaker {
         guess.reset()
         if isOver {
             masterCode.kind = .master(isHidden: false)
-            scoreSaver?.saveBestScore(attempts: attempts.count)
         }
     }
     

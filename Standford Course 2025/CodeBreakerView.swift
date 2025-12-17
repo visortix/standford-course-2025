@@ -44,7 +44,6 @@ struct CodeBreakerView: View {
                 selection = 0
             }
         }
-        .accessibilityIdentifier("guessButton")
         .font(.system(size: ActionButton.maximumFontSize))
         .minimumScaleFactor(ActionButton.scaleFactor)
     }
@@ -56,7 +55,6 @@ struct CodeBreakerView: View {
                 selection = 0
             }
         }
-        .accessibilityIdentifier("restartButton")
         .font(.system(size: ActionButton.maximumFontSize))
         .minimumScaleFactor(ActionButton.scaleFactor)
     }
@@ -88,6 +86,7 @@ struct CodeBreakerView: View {
                     }
                 }
             }
+            .accessibilityElement(children: .contain)
     }
     struct ActionButton {
         static let minimumFontSize: CGFloat = 8

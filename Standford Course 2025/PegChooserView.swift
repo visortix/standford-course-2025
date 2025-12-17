@@ -13,12 +13,13 @@ struct PegChooserView: View {
     
     var body: some View {
         HStack {
-            ForEach(choices, id: \.self) { peg in
+            ForEach(choices.enumerated(), id: \.element) { (index, peg) in
                 Button {
                     onChoose?(peg)
                 } label: {
                     PegView(peg: peg)
                 }
+                .accessibilityIdentifier("peg_option_\(index)")
             }
         }
     }
