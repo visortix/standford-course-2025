@@ -7,25 +7,22 @@ on:
     branches: [ "main", "master" ]
 
 jobs:
-  mobsf-scan:
+  mobsfscan:
     runs-on: ubuntu-latest
+    name: Run mobsfscan
 
     steps:
-      - name: Checkout code
+      - name: Checkout the code
         uses: actions/checkout@v4
 
-      - name: Run MobSF Analysis
+      - name: Run mobsfscan
         run: |
-          echo "Pulling MobSF image..."
-          docker pull opensecurity/mobile-security-framework-mobsf:latest
-          
-          echo "Running Scan..."
           docker run --rm \
-            -v ${{ github.workspace }}:/home/mobsf/source \
-            opensecurity/mobile-security-framework-mobsf:latest \
-            /bin/bash -c "source venv/bin/activate && python3 manage.py scan --src /home/mobsf/source --output /home/mobsf/source/report.json --format json"
+            -v ${{ github.workspace }}:/src \
+            opensecurity/mobsfscan:latest \
+            /src --json -o /src/report.json
 
-      - name: Upload MobSF Report
+      - name: Upload Report
         uses: actions/upload-artifact@v4
         with:
           name: Security-Report-MobSF
