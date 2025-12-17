@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import GameKit
 import os
 
 let logger = Logger(subsystem: "com.stanford.codebreaker", category: "GameLogic")
@@ -43,13 +44,20 @@ struct CodeBreaker {
     
     init(
         pegChoices: [Peg] = pegEmojis,
-        count: Int = Int.random(in: 3...6),
+        count: Int? = nil,
         gameNumber: Int = 0
     ) {        
         self.pegChoices = switch gameNumber {
         case 1: CodeBreaker.pegColors
         case 2: CodeBreaker.pegEmojis
         default: pegChoices
+        }
+        
+        let secureCount: Int
+        if let requestedCount = count {
+            secureCount = requestedCount
+        } else {
+            secureCount = 3 + GKRandomSource.sharedRandom().nextInt(upperBound: 4)
         }
         
         if !pegChoices.isEmpty {
@@ -62,9 +70,9 @@ struct CodeBreaker {
             }
         }
 
-        masterCode = Code(kind: .master(isHidden: true), count: count)
+        masterCode = Code(kind: .master(isHidden: true), count: secureCount)
         masterCode.randomize(from: self.pegChoices)
-        guess = Code(kind: .guess, count: count)
+        guess = Code(kind: .guess, count: secureCount)
     }
     
     var pegCount: Int {
@@ -101,7 +109,7 @@ struct CodeBreaker {
     }
     
     mutating func restartGame() {
-        self = CodeBreaker(gameNumber: Int.random(in: 1...2))
+        self = CodeBreaker(gameNumber: (1 + GKRandomSource.sharedRandom().nextInt(upperBound: 2)))
     }
     
     mutating func changeGuessPeg(at index: Int) {
