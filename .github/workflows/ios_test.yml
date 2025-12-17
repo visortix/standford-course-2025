@@ -15,16 +15,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Цей крок вибирає останню стабільну версію Xcode на сервері
-      # Якщо у вас дуже стара або бета версія, це можна налаштувати точніше
       - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
 
-      - name: Run UI Tests
-        # УВАГА: Замініть 'Standford Course 2025' на точну назву вашої схеми!
-        # Якщо схема має пробіли, обов'язково беріть її в лапки.
+      - name: Run UI Test
         run: |
           xcodebuild test \
             -scheme "Standford Course 2025" \
