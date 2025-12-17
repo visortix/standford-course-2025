@@ -42,6 +42,9 @@ struct CodeView: View {
                         selection = index
                     }
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(code.pegs[index].accessibilityLabel)
+                .accessibilityAddTraits(code.kind == .guess ? .isButton : .isImage)
         }
     }
 }

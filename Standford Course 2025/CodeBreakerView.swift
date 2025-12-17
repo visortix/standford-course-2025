@@ -44,6 +44,7 @@ struct CodeBreakerView: View {
                 selection = 0
             }
         }
+        .foregroundStyle(ActionButton.color)
         .font(.system(size: ActionButton.maximumFontSize))
         .minimumScaleFactor(ActionButton.scaleFactor)
     }
@@ -55,6 +56,7 @@ struct CodeBreakerView: View {
                 selection = 0
             }
         }
+        .foregroundStyle(ActionButton.color)
         .font(.system(size: ActionButton.maximumFontSize))
         .minimumScaleFactor(ActionButton.scaleFactor)
     }
@@ -92,6 +94,7 @@ struct CodeBreakerView: View {
         static let minimumFontSize: CGFloat = 8
         static let maximumFontSize: CGFloat = 80
         static let scaleFactor = minimumFontSize / maximumFontSize
+        static let color = Color(hex: "003D75")
     }
     struct GuessLine {
         static let bottomBorder: CGFloat = 15
@@ -102,6 +105,22 @@ struct CodeBreakerView: View {
 extension Color {
     static func gray(_ brightness: CGFloat) -> Color {
         Color(hue: 12/360, saturation: 0, brightness: brightness)
+    }
+}
+
+extension Color {
+    init(hex: String) {
+        let scanner = Scanner(string: hex)
+        _ = scanner.scanString("#")
+        
+        var rgb: UInt64 = 0
+        scanner.scanHexInt64(&rgb)
+        
+        let red = Double((rgb >> 16) & 0xFF) / 255.0
+        let green = Double((rgb >> 8) & 0xFF) / 255.0
+        let blue = Double(rgb & 0xFF) / 255.0
+        
+        self.init(red: red, green: green, blue: blue)
     }
 }
 

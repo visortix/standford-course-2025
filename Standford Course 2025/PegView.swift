@@ -30,6 +30,9 @@ struct PegView: View {
                 }
                 pegContent
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(peg.accessibilityLabel)
+            .accessibilityAddTraits(kind == .guess ? .isButton : .isImage)
     }
     
     @ViewBuilder

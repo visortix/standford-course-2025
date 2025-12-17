@@ -33,7 +33,17 @@ struct MatchMarkers: View {
                 }
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Guess Result")
+        .accessibilityValue(makeAccessibilityValue())
     }
+    
+    func makeAccessibilityValue() -> String {
+            let exact = matches.filter { $0 == .exact }.count
+            let inexact = matches.filter { $0 == .inexact }.count
+            if exact == 0 && inexact == 0 { return "No matches" }
+            return "\(exact) exact, \(inexact) color only"
+        }
     
     func matchMarker(peg: Int) -> some View {
         let exactCount = matches.filter { $0 == .exact }.count
