@@ -2,9 +2,9 @@ name: iOS Smoke Tests
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "master" ]
 
 jobs:
   build-and-test:
@@ -15,15 +15,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Select Xcode Version
-        run: sudo xcode-select -s /Applications/Xcode_15.0.app
+      # Цей крок вибирає останню стабільну версію Xcode на сервері
+      # Якщо у вас дуже стара або бета версія, це можна налаштувати точніше
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: Run UI Tests
-        # Замініть 'CodeBreaker' на назву вашого Scheme в Xcode
-        # platform=iOS Simulator,name=iPhone 15 - вказує на якому пристрої тестувати
+        # УВАГА: Замініть 'Standford Course 2025' на точну назву вашої схеми!
+        # Якщо схема має пробіли, обов'язково беріть її в лапки.
         run: |
           xcodebuild test \
-            -scheme "CodeBreaker" \
-            -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+            -scheme "Standford Course 2025" \
+            -destination 'platform=iOS Simulator,name=iPhone 16,OS=latest' \
             -enableCodeCoverage YES \
+            -resultBundlePath TestResults \
             clean test
