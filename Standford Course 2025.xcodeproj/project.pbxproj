@@ -24,10 +24,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		D645B0D82EF0EEFF007C63DD /* Standford Course 2025UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "Standford Course 2025UITests.xctest"; path = "/Users/visortix/Developer/Standford Course 2025/build/Debug/Standford Course 2025UITests-Runner.app/Contents/PlugIns/Standford Course 2025UITests.xctest"; sourceTree = "<absolute>"; };
-		D67AA4182EF0F25B00D1FDED /* Standford Course 2025.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Standford Course 2025.app"; path = "/Users/visortix/Developer/Standford Course 2025/build/Debug/Standford Course 2025.app"; sourceTree = "<absolute>"; };
-		D67AA4192EF0F25B00D1FDED /* Standford Course 2025Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "Standford Course 2025Tests.xctest"; path = "/Users/visortix/Developer/Standford Course 2025/build/Debug/Standford Course 2025.app/Contents/PlugIns/Standford Course 2025Tests.xctest"; sourceTree = "<absolute>"; };
 		D6A9DDC62EF05445001DEB31 /* CucumberishLibrary.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = CucumberishLibrary.xcodeproj; sourceTree = "<group>"; };
+		D6D79F5B2EF2454E003DCF7C /* Standford Course 2025.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "Standford Course 2025.app"; path = "/Users/visortix/Developer/Standford Course 2025/build/Debug/Standford Course 2025.app"; sourceTree = "<absolute>"; };
+		D6D79F5C2EF2454E003DCF7C /* Standford Course 2025Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "Standford Course 2025Tests.xctest"; path = "/Users/visortix/Developer/Standford Course 2025/build/Debug/Standford Course 2025.app/Contents/PlugIns/Standford Course 2025Tests.xctest"; sourceTree = "<absolute>"; };
+		D6D79F5D2EF2454E003DCF7C /* Standford Course 2025UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = "Standford Course 2025UITests.xctest"; path = "/Users/visortix/Developer/Standford Course 2025/build/Debug/Standford Course 2025UITests-Runner.app/Contents/PlugIns/Standford Course 2025UITests.xctest"; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -109,7 +109,7 @@
 			);
 			name = "Standford Course 2025";
 			productName = "Standford Course 2025";
-			productReference = D67AA4182EF0F25B00D1FDED /* Standford Course 2025.app */;
+			productReference = D6D79F5B2EF2454E003DCF7C /* Standford Course 2025.app */;
 			productType = "com.apple.product-type.application";
 		};
 		D65589C32ED73B770079015A /* Standford Course 2025Tests */ = {
@@ -130,7 +130,7 @@
 			);
 			name = "Standford Course 2025Tests";
 			productName = "Standford Course 2025Tests";
-			productReference = D67AA4192EF0F25B00D1FDED /* Standford Course 2025Tests.xctest */;
+			productReference = D6D79F5C2EF2454E003DCF7C /* Standford Course 2025Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		D65589CD2ED73B770079015A /* Standford Course 2025UITests */ = {
@@ -151,7 +151,7 @@
 			);
 			name = "Standford Course 2025UITests";
 			productName = "Standford Course 2025UITests";
-			productReference = D645B0D82EF0EEFF007C63DD /* Standford Course 2025UITests.xctest */;
+			productReference = D6D79F5D2EF2454E003DCF7C /* Standford Course 2025UITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
