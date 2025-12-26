@@ -6,11 +6,6 @@
 //
 
 import SwiftUI
-import GameKit
-import os
-
-let logger = Logger(subsystem: "com.stanford.codebreaker", category: "GameLogic")
-let signposter = OSSignposter(logger: logger)
 
 enum Peg: Equatable, Hashable {
     case color(Color)
@@ -44,20 +39,13 @@ struct CodeBreaker {
     
     init(
         pegChoices: [Peg] = pegEmojis,
-        count: Int? = nil,
+        count: Int = Int.random(in: 3...6),
         gameNumber: Int = 0
     ) {        
         self.pegChoices = switch gameNumber {
         case 1: CodeBreaker.pegColors
         case 2: CodeBreaker.pegEmojis
         default: pegChoices
-        }
-        
-        let secureCount: Int
-        if let requestedCount = count {
-            secureCount = requestedCount
-        } else {
-            secureCount = 3 + GKRandomSource.sharedRandom().nextInt(upperBound: 4)
         }
         
         if !pegChoices.isEmpty {
@@ -70,9 +58,9 @@ struct CodeBreaker {
             }
         }
 
-        masterCode = Code(kind: .master(isHidden: true), count: secureCount)
+        masterCode = Code(kind: .master(isHidden: true), count: count)
         masterCode.randomize(from: self.pegChoices)
-        guess = Code(kind: .guess, count: secureCount)
+        guess = Code(kind: .guess, count: count)
     }
     
     var pegCount: Int {
@@ -84,14 +72,11 @@ struct CodeBreaker {
     }
     
     mutating func attemptGuess() {
-        let state = signposter.beginInterval("Attempt Guess Logic")
-        defer { signposter.endInterval("Attempt Guess Logic", state) }
-        
         let missingPegs = guess.pegs.filter({ $0 == Peg.missing })
         guard missingPegs.count != masterCode.pegs.count else { return }
-//        guard !attempts.contains(where: { $0.pegs == guess.pegs }) else {
-//            return
-//        }
+        guard !attempts.contains(where: { $0.pegs == guess.pegs }) else {
+            return
+        }
         
         var attempt = guess
         attempt.kind = .attempt(guess.match(against: masterCode))
@@ -108,8 +93,8 @@ struct CodeBreaker {
         guess.pegs[index] = peg
     }
     
-    mutating func restartGame() {
-        self = CodeBreaker(gameNumber: (1 + GKRandomSource.sharedRandom().nextInt(upperBound: 2)))
+    mutating func restart() {
+        self = CodeBreaker(gameNumber: Int.random(in: 1...2))
     }
     
     mutating func changeGuessPeg(at index: Int) {

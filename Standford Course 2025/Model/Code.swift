@@ -28,6 +28,7 @@ struct Code {
         for index in pegs.indices {
             pegs[index] = pegChoices.randomElement() ?? Peg.missing
         }
+        print("\n", self)
     }
     
     var isHidden: Bool {

@@ -10,12 +10,10 @@ import CoreData
 
 @main
 struct Standford_Course_2025App: App {
-    let persistenceController = PersistenceController.shared
 
     var body: some Scene {
         WindowGroup {
             CodeBreakerView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }
 }
