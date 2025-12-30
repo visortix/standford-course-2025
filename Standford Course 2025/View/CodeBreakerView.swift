@@ -9,7 +9,7 @@ import SwiftUI
 import CoreData
 
 struct CodeBreakerView: View {
-    //MARK: Data Owned by Me
+    // MARK: Data Owned by Me
     @State private var game = CodeBreaker()
     @State private var selection: Int = 0
     @State private var restarting = false
@@ -19,12 +19,22 @@ struct CodeBreakerView: View {
             
     var body: some View {
         VStack {
-            CodeView(code: game.masterCode) { restartButton.labelStyle(.titleOnly) }
-                .opacity(restarting ? 0 : 1)
-                .animation(nil, value: game.masterCode.pegs)
+            
+            CodeView(code: game.masterCode) {
+                VStack {
+                    restartButton.labelStyle(.titleOnly)
+                    ElapsedTime(startTime: game.startTime, endTime: game.endTime)
+                        .flexibleSystemFont()
+                        .monospaced()
+                        .lineLimit(1)
+                }
+            }
+            .opacity(restarting ? 0 : 1)
+            .animation(nil, value: game.masterCode.pegs)
+            .animation(nil, value: restarting)
             Divider()
             ScrollView {
-                if !game.isOver || restarting {
+                if !game.isOver {
                     CodeView(code: game.guess, selection: $selection) { guessButton }
                         .padding(GuessLine.padding)
                         .animation(nil, value: game.attempts.count)
@@ -74,18 +84,13 @@ struct CodeBreakerView: View {
     }
     
     var restartButton: some View {
-        Button("Restart Game", systemImage: "arrow.circlepath") {
+        Button("Restart", systemImage: "arrow.circlepath") {
             withAnimation(.restart) {
-                restarting = true
+                restarting = game.isOver
+                game.restart()
+                selection = 0
             } completion: {
                 withAnimation(.restart) {
-                    game.restart()
-                    selection = 0
-                    restarting = false
-                }
-                withAnimation(.restart) {
-                    game.restart()
-                    selection = 0
                     restarting = false
                 }
             }

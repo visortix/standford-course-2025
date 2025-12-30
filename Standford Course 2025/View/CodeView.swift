@@ -10,11 +10,12 @@ import SwiftUI
 struct CodeView<AncillaryView>: View where AncillaryView: View {
     // MARK: Data In
     let code: Code
+    @ViewBuilder let ancillaryView: () -> AncillaryView
     
     // MARK: Data Shared with Me
     @Binding var selection: Int
     
-    @ViewBuilder let ancillaryView: () -> AncillaryView
+    
     
     init(code: Code,
          selection: Binding<Int> = .constant(-1),

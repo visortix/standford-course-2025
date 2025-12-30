@@ -18,6 +18,8 @@ struct CodeBreaker {
     var guess: Code
     var attempts: [Code] = []
     let pegChoices: [Peg]
+    let startTime = Date.now
+    var endTime: Date? = nil
     
     private static var pegColors: [Peg] = [
         .color(.red),
@@ -85,6 +87,7 @@ struct CodeBreaker {
         guess.reset()
         if isOver {
             masterCode.kind = .master(isHidden: false)
+            endTime = .now
         }
     }
     

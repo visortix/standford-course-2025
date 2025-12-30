@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct PegChooserView: View {
+    // MARK: Data In
     let choices: [Peg]
+    
+    // MARK: Data Out Function
     let onChoose: ((Peg) -> Void)?
+    
+    // MARK: - Body
     
     var body: some View {
         HStack {
