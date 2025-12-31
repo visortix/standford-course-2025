@@ -71,23 +71,3 @@ struct Code {
         }
     }
 }
-
-extension Peg {
-    var accessibilityLabel: String {
-        switch self {
-        case .emoji(let s): return s // Читає сам емодзі, напр. "Smiling face"
-        case .color(let c):
-            // Перетворюємо кольори SwiftUI на текст
-            switch c {
-            case .red: return "Red"
-            case .green: return "Green"
-            case .blue: return "Blue"
-            case .yellow: return "Yellow"
-            case .purple: return "Purple"
-            case .cyan: return "Cyan"
-            default: return "Peg"
-            }
-        case .missing: return "Empty slot"
-        }
-    }
-}

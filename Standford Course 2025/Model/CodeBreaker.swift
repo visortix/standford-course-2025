@@ -13,15 +13,27 @@ enum Peg: Equatable, Hashable {
     case missing
 }
 
-struct CodeBreaker {
+@Observable
+class CodeBreaker {
+    var name: String
+    
+    // MARK: Codes
     var masterCode: Code
     var guess: Code
     var attempts: [Code] = []
+    
+    // MARK: Pegs
     let pegChoices: [Peg]
-    let startTime = Date.now
+    
+    // MARK: Time
+    var startTime = Date.now
     var endTime: Date? = nil
     
-    private static var pegColors: [Peg] = [
+    // MARK: Info
+    var pegCount: Int { masterCode.pegs.count }
+    var isOver: Bool { attempts.first?.pegs == masterCode.pegs }
+    
+    private static let pegColors: [Peg] = [
         .color(.red),
         .color(.green),
         .color(.yellow),
@@ -30,7 +42,7 @@ struct CodeBreaker {
         .color(.cyan)
     ]
 
-    private static var pegEmojis: [Peg] = [
+    private static let pegEmojis: [Peg] = [
         .emoji("😎"),
         .emoji("🤗"),
         .emoji("👽"),
@@ -39,41 +51,48 @@ struct CodeBreaker {
         .emoji("😡")
     ]
     
-    init(
-        pegChoices: [Peg] = pegEmojis,
-        count: Int = Int.random(in: 3...6),
-        gameNumber: Int = 0
-    ) {        
-        self.pegChoices = switch gameNumber {
-        case 1: CodeBreaker.pegColors
-        case 2: CodeBreaker.pegEmojis
-        default: pegChoices
-        }
-        
-        if !pegChoices.isEmpty {
-            switch self.pegChoices[0] {
-            case .emoji(_):
-                CodeBreaker.pegEmojis = self.pegChoices
-            case .color(_):
-                CodeBreaker.pegColors = self.pegChoices
-            default: break
-            }
-        }
-
-        masterCode = Code(kind: .master(isHidden: true), count: count)
+    // MARK: - Inits
+    
+    init(name: String = "Code Breaker", pegChoices: [Peg], count: Int) {
+        self.name = name
+        self.pegChoices = pegChoices
+        var masterCode = Code(kind: .master(isHidden: true), count: count)
         masterCode.randomize(from: self.pegChoices)
+        self.masterCode = masterCode
         guess = Code(kind: .guess, count: count)
     }
     
-    var pegCount: Int {
-        masterCode.pegs.count
+    convenience init(game: GameType, count: Int) {
+        let name: String
+        let pegChoices: [Peg]
+        
+        switch game {
+        case .colors:
+            name = "Cool Colors"
+            pegChoices = CodeBreaker.pegColors
+        case .emojis:
+            name = "Freaky Faces"
+            pegChoices = CodeBreaker.pegEmojis
+        }
+        
+        self.init(name: name, pegChoices: pegChoices, count: count)
     }
     
-    var isOver: Bool {
-        attempts.last?.pegs == masterCode.pegs
+    convenience init(name: String = "Code Breaker", pegChoices: [Peg]) {
+        self.init(name: name, pegChoices: pegChoices, count: Int.randomPegCount())
     }
     
-    mutating func attemptGuess() {
+    convenience init(game: GameType) {
+        self.init(game: game, count: Int.randomPegCount())
+    }
+    
+    convenience init() {
+        self.init(game: GameType.random())
+    }
+    
+    // MARK: - Logic
+    
+    func attemptGuess() {
         let missingPegs = guess.pegs.filter({ $0 == Peg.missing })
         guard missingPegs.count != masterCode.pegs.count else { return }
         guard !attempts.contains(where: { $0.pegs == guess.pegs }) else {
@@ -83,7 +102,7 @@ struct CodeBreaker {
         var attempt = guess
         attempt.kind = .attempt(guess.match(against: masterCode))
         
-        attempts.append(attempt)
+        attempts.insert(attempt, at: 0)
         guess.reset()
         if isOver {
             masterCode.kind = .master(isHidden: false)
@@ -91,16 +110,23 @@ struct CodeBreaker {
         }
     }
     
-    mutating func setGuessPeg(_ peg: Peg, at index: Int) {
+    func setGuessPeg(_ peg: Peg, at index: Int) {
         guard masterCode.pegs.indices.contains(index) else { return }
         guess.pegs[index] = peg
     }
     
-    mutating func restart() {
-        self = CodeBreaker(gameNumber: Int.random(in: 1...2))
+    func restart() {
+        let newGame = CodeBreaker(name: name, pegChoices: pegChoices)
+        
+        self.name = newGame.name
+        self.masterCode = newGame.masterCode
+        self.guess = newGame.guess
+        self.attempts = newGame.attempts
+        self.startTime = newGame.startTime
+        self.endTime = newGame.endTime
     }
     
-    mutating func changeGuessPeg(at index: Int) {
+    func changeGuessPeg(at index: Int) {
         guard guess.pegs.indices.contains(index) else { return }
         let existingPeg = guess.pegs[index]
         if let indexOfExistingPeg = pegChoices.firstIndex(of: existingPeg) {
@@ -110,5 +136,27 @@ struct CodeBreaker {
             guess.pegs[index] = pegChoices.first ?? Peg.missing
         }
     }
+    
+    enum GameType {
+        case colors
+        case emojis
+        static func random() -> GameType {
+            let randomNumber = Int.random(in: 1...2)
+            switch randomNumber {
+            case 1:  return .colors
+            case 2:  return .emojis
+            default: return .emojis
+            }
+        }
+    }
 }
 
+extension CodeBreaker: Identifiable, Hashable, Equatable {
+    static func == (lhs: CodeBreaker, rhs: CodeBreaker) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}

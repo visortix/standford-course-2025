@@ -13,7 +13,7 @@ struct Standford_Course_2025App: App {
 
     var body: some Scene {
         WindowGroup {
-            CodeBreakerView()
+            GameChooser()
         }
     }
 }

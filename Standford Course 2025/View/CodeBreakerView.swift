@@ -9,8 +9,10 @@ import SwiftUI
 import CoreData
 
 struct CodeBreakerView: View {
+    // MARK: Data Shared with Me
+    let game: CodeBreaker
+    
     // MARK: Data Owned by Me
-    @State private var game = CodeBreaker()
     @State private var selection: Int = 0
     @State private var restarting = false
     @State private var hideMostRecentMarkers = false
@@ -19,16 +21,7 @@ struct CodeBreakerView: View {
             
     var body: some View {
         VStack {
-            
-            CodeView(code: game.masterCode) {
-                VStack {
-                    restartButton.labelStyle(.titleOnly)
-                    ElapsedTime(startTime: game.startTime, endTime: game.endTime)
-                        .flexibleSystemFont()
-                        .monospaced()
-                        .lineLimit(1)
-                }
-            }
+            CodeView(code: game.masterCode)
             .opacity(restarting ? 0 : 1)
             .animation(nil, value: game.masterCode.pegs)
             .animation(nil, value: restarting)
@@ -40,10 +33,10 @@ struct CodeBreakerView: View {
                         .animation(nil, value: game.attempts.count)
                         .opacity(restarting ? 0 : 1)
                 }
-                ForEach(game.attempts.indices.reversed(), id: \.self) { index in
-                    CodeView(code:  game.attempts[index]) {
-                        let showMarkers = !hideMostRecentMarkers || index != game.attempts.count - 1
-                        if showMarkers, let matches = game.attempts[index].matches {
+                ForEach(game.attempts, id: \.pegs) { attempt in
+                    CodeView(code:  attempt) {
+                        let showMarkers = !hideMostRecentMarkers || attempt.pegs != game.attempts.first?.pegs
+                        if showMarkers, let matches = attempt.matches {
                             MatchMarkers(matches: matches)
                         }
                     }
@@ -53,9 +46,19 @@ struct CodeBreakerView: View {
             if !game.isOver {
                 Group {
                     Divider()
-                    PegChooserView(choices: game.pegChoices, onChoose: changePegAtSelection)
+                    PegChooser(choices: game.pegChoices, onChoose: changePegAtSelection)
                 }
                 .transition(.pegChooser)
+            }
+        }
+        .toolbar {
+            ToolbarItem {
+                ElapsedTime(startTime: game.startTime, endTime: game.endTime)
+                    .monospacedDigit()
+                    .fixedSize()
+            }
+            ToolbarItem(placement: .primaryAction) {
+                restartButton.labelStyle(.titleOnly)
             }
         }
         .padding()
@@ -95,7 +98,6 @@ struct CodeBreakerView: View {
                 }
             }
         }
-        .flexibleSystemFont()
     }
     
     // MARK: - Constants
@@ -110,5 +112,8 @@ struct CodeBreakerView: View {
 // MARK: - #Preview
 
 #Preview {
-    CodeBreakerView()
+    @Previewable @State var game = CodeBreaker()
+    NavigationStack {
+        CodeBreakerView(game: game)
+    }
 }
